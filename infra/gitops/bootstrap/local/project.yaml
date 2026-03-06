@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: maptheisland-local-platform
+  namespace: maptheisland-dev-foundation-system
+  labels:
+    maptheisland.io/scope: local-only
+spec:
+  description: Internal-only Local control-plane project for MapTheIsland.
+  sourceRepos:
+    - https://github.com/bcdannyboy/MapTheIsland.git
+    - https://argoproj.github.io/argo-helm
+    - https://charts.external-secrets.io
+    - https://helm.releases.hashicorp.com
+    - https://charts.jetstack.io
+  destinations:
+    - namespace: maptheisland-dev-foundation-system
+      server: https://kubernetes.default.svc
+    - namespace: maptheisland-dev-foundation-observability
+      server: https://kubernetes.default.svc
+    - namespace: maptheisland-dev-application
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"

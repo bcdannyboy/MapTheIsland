@@ -1,0 +1,29 @@
+namespacePrefix: maptheisland
+
+namespaces:
+  controlPlane:
+    - foundation-system
+    - foundation-observability
+  dataPlane:
+    - ingest
+    - review
+    - retrieval
+  application:
+    - web
+    - application
+
+priorityClasses:
+  general:
+    value: 100000
+    description: General CPU-oriented workloads.
+  stateful:
+    value: 100500
+    description: Stateful workloads that should outrank general services.
+  gpu:
+    value: 101000
+    description: GPU-backed workloads with explicit accelerator demand.
+
+storageProfileAliases:
+  general: set-by-provider
+  stateful_ssd: set-by-provider
+  gpu_scratch: set-by-provider

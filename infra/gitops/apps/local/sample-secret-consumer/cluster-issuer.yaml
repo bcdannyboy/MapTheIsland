@@ -1,0 +1,8 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: maptheisland-local-selfsigned
+  labels:
+    maptheisland.io/scope: local-only
+spec:
+  selfSigned: {}

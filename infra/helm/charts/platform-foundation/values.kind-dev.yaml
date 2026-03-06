@@ -1,0 +1,29 @@
+namespacePrefix: maptheisland-dev
+
+namespaces:
+  controlPlane:
+    - foundation-system
+    - foundation-observability
+  dataPlane:
+    - ingest
+    - review
+    - retrieval
+  application:
+    - web
+    - application
+
+priorityClasses:
+  general:
+    value: 100000
+    description: General CPU-oriented workloads on the local dev target.
+  stateful:
+    value: 100500
+    description: Stateful-service simulation workloads on the local dev target.
+  gpu:
+    value: 101000
+    description: Accelerator-adjacent workload simulation on the local dev target.
+
+storageProfileAliases:
+  general: standard
+  stateful_ssd: standard
+  gpu_scratch: ephemeral

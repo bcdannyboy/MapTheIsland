@@ -1,0 +1,26 @@
+global:
+  domain: argocd.local.maptheisland.invalid
+  priorityClassName: maptheisland-dev-general
+  nodeSelector:
+    maptheisland.io/nodepool: general
+
+configs:
+  cm:
+    admin.enabled: true
+    timeout.reconciliation: 60s
+    timeout.reconciliation.jitter: 15s
+  params:
+    server.insecure: true
+
+server:
+  service:
+    type: ClusterIP
+
+dex:
+  enabled: false
+
+notifications:
+  enabled: false
+
+applicationSet:
+  enabled: false

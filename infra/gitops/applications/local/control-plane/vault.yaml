@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maptheisland-local-vault
+  namespace: maptheisland-dev-foundation-system
+  labels:
+    maptheisland.io/scope: local-only
+spec:
+  project: maptheisland-local-platform
+  destination:
+    namespace: maptheisland-dev-foundation-system
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: https://helm.releases.hashicorp.com
+      chart: vault
+      targetRevision: 0.32.0
+      helm:
+        releaseName: maptheisland-vault
+        valueFiles:
+          - $values/infra/helm/values/control-plane/vault.local-values.yaml
+    - repoURL: https://github.com/bcdannyboy/MapTheIsland.git
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

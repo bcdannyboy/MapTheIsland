@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maptheisland-local-bootstrap
+  namespace: maptheisland-dev-foundation-system
+  labels:
+    maptheisland.io/scope: local-only
+spec:
+  project: default
+  destination:
+    namespace: maptheisland-dev-foundation-system
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/bcdannyboy/MapTheIsland.git
+    targetRevision: main
+    path: infra/gitops/applications/local/control-plane
+    directory:
+      recurse: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

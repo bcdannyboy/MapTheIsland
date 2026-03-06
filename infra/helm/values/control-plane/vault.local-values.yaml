@@ -1,0 +1,30 @@
+global:
+  tlsDisable: true
+
+injector:
+  enabled: false
+
+csi:
+  enabled: false
+
+server:
+  dev:
+    enabled: true
+    devRootToken: ""
+  dataStorage:
+    enabled: false
+  auditStorage:
+    enabled: false
+  nodeSelector:
+    maptheisland.io/nodepool: stateful
+  affinity: ""
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ui:
+  enabled: true

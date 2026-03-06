@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maptheisland-local-argocd
+  namespace: maptheisland-dev-foundation-system
+  labels:
+    maptheisland.io/scope: local-only
+spec:
+  project: maptheisland-local-platform
+  destination:
+    namespace: maptheisland-dev-foundation-system
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      targetRevision: 9.4.7
+      helm:
+        releaseName: maptheisland-argocd
+        valueFiles:
+          - $values/infra/helm/values/control-plane/argocd.local-values.yaml
+    - repoURL: https://github.com/bcdannyboy/MapTheIsland.git
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

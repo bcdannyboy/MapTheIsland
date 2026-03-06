@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maptheisland"
+version = "0.1.0"
+description = "Provenance-first document mapping and evidence analysis platform."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "pydantic>=2.8,<3.0",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.11,<2.0",
+  "pytest>=8.3,<9.0",
+  "pytest-asyncio>=0.24,<0.25",
+  "pytest-cov>=5.0,<6.0",
+  "ruff>=0.15,<0.16",
+]
+
+[tool.setuptools]
+package-dir = {"" = "libs/schemas/src"}
+
+[tool.setuptools.packages.find]
+where = ["libs/schemas/src"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=libs/schemas/src/maptheisland_schemas --cov=libs/contracts/src/maptheisland_contracts --cov=libs/policy/src/maptheisland_policy --cov-branch --cov-report=term-missing --cov-fail-under=100"
+asyncio_default_fixture_loop_scope = "function"
+minversion = "8.0"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["libs", "services", "tests"]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "D"]
+ignore = ["D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+files = ["libs/schemas/src", "libs/contracts/src", "libs/policy/src", "tests"]
+mypy_path = "libs/schemas/src:libs/contracts/src:libs/policy/src"
+python_version = "3.12"
+strict = true
+warn_unused_configs = true

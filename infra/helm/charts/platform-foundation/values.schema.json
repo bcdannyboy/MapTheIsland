@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "namespacePrefix",
+    "namespaces",
+    "priorityClasses",
+    "storageProfileAliases"
+  ],
+  "properties": {
+    "namespacePrefix": {
+      "type": "string",
+      "minLength": 1
+    },
+    "namespaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["controlPlane", "dataPlane", "application"],
+      "properties": {
+        "controlPlane": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "dataPlane": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "application": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "priorityClasses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["general", "stateful", "gpu"],
+      "properties": {
+        "general": { "$ref": "#/$defs/priorityClass" },
+        "stateful": { "$ref": "#/$defs/priorityClass" },
+        "gpu": { "$ref": "#/$defs/priorityClass" }
+      }
+    },
+    "storageProfileAliases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["general", "stateful_ssd", "gpu_scratch"],
+      "properties": {
+        "general": { "type": "string", "minLength": 1 },
+        "stateful_ssd": { "type": "string", "minLength": 1 },
+        "gpu_scratch": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "priorityClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "description"],
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

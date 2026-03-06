@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: maptheisland-local-sample-certificate
+  namespace: maptheisland-dev-application
+  labels:
+    app.kubernetes.io/name: maptheisland-local-sample-consumer
+    maptheisland.io/scope: local-only
+spec:
+  secretName: maptheisland-local-sample-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: maptheisland-local-selfsigned
+  dnsNames:
+    - maptheisland-local-sample-consumer
+    - maptheisland-local-sample-consumer.maptheisland-dev-application.svc.cluster.local

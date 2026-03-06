@@ -1,0 +1,12 @@
+{{- range $groupName, $namespaces := .Values.namespaces }}
+{{- range $namespace := $namespaces }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ printf "%s-%s" $.Values.namespacePrefix $namespace | quote }}
+  labels:
+    maptheisland.io/foundation-group: {{ $groupName | quote }}
+    maptheisland.io/foundation-chart: "platform-foundation"
+---
+{{- end }}
+{{- end }}

@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maptheisland-local-cert-manager
+  namespace: maptheisland-dev-foundation-system
+  labels:
+    maptheisland.io/scope: local-only
+spec:
+  project: maptheisland-local-platform
+  destination:
+    namespace: maptheisland-dev-foundation-system
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.19.4
+      helm:
+        releaseName: maptheisland-cert-manager
+        valueFiles:
+          - $values/infra/helm/values/control-plane/cert-manager.local-values.yaml
+    - repoURL: https://github.com/bcdannyboy/MapTheIsland.git
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

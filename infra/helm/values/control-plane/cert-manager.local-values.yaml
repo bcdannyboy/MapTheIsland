@@ -1,0 +1,10 @@
+crds:
+  enabled: true
+
+global:
+  priorityClassName: maptheisland-dev-general
+  nodeSelector:
+    maptheisland.io/nodepool: general
+
+prometheus:
+  enabled: false

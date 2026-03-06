@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maptheisland-local-platform-foundation
+  namespace: maptheisland-dev-foundation-system
+  labels:
+    maptheisland.io/scope: local-only
+spec:
+  project: maptheisland-local-platform
+  destination:
+    namespace: maptheisland-dev-foundation-system
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/bcdannyboy/MapTheIsland.git
+    targetRevision: main
+    path: infra/helm/charts/platform-foundation
+    helm:
+      releaseName: maptheisland-platform
+      valueFiles:
+        - values.kind-dev.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
