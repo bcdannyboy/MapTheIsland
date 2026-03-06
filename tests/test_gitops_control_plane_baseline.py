@@ -77,6 +77,7 @@ def test_argocd_manifests_pin_repo_and_chart_sources() -> None:
     assert "https://charts.external-secrets.io" in project_manifest
     assert "https://helm.releases.hashicorp.com" in project_manifest
     assert "https://charts.jetstack.io" in project_manifest
+    assert "namespace: kube-system" in project_manifest
     assert "targetRevision: 9.4.7" in argocd_app
     assert "$values/infra/helm/values/control-plane/argocd.local-values.yaml" in argocd_app
 

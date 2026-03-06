@@ -51,3 +51,8 @@ pnpm check:kind:argocd:remote-reconciliation
 These commands are intentionally separate from direct chart installation. They
 apply the repo-managed bootstrap objects and then wait for Argo CD to reconcile
 the child applications from the tracked remote branch.
+
+The Local `AppProject` intentionally includes `kube-system` as an allowed
+destination because the upstream cert-manager chart creates leader-election
+RBAC objects there even though the controller workloads themselves run in
+`maptheisland-dev-foundation-system`.

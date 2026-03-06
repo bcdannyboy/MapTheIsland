@@ -98,6 +98,8 @@ The Local namespace and tenancy model is:
   - `maptheisland-dev-foundation-observability`
 - application runtime namespace:
   - `maptheisland-dev-application`
+- upstream chart compatibility exception:
+  - `kube-system` for upstream cert-manager leader-election RBAC only
 
 The key rules are:
 
@@ -110,6 +112,9 @@ The key rules are:
 - service runtime secrets may not be shared across namespaces by reference
 - certificate secrets are owned per namespace by cert-manager and are not
   shared cluster-wide
+- `kube-system` is not a general control-plane tenancy target; it is permitted
+  only because the upstream cert-manager chart publishes leader-election RBAC
+  objects there during Local tracked-remote reconciliation
 
 ## Local Secret Bootstrap Trust Chain
 
