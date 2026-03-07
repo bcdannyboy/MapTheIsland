@@ -211,3 +211,26 @@
 - The first `apply:kind:sample-secret-consumer` attempt failed because the External Secrets admission webhook was not yet ready even though the operator deployment had been installed.
 - Hardened the published root command so `apply:kind:sample-secret-consumer` now waits for the cert-manager and External Secrets webhook deployments before applying the sample manifests.
 - Recorded the residual boundary that direct Local bootstrap is not equivalent to tracked-remote Git reconciliation.
+
+## P01-T03 Tracked-Remote Local Git Reconciliation Completion
+
+- Reconciled the repository and the tracked public remote branch, then confirmed that the Local GitOps manifests were being validated against the same public `main` branch state exercised by Argo CD.
+- Hardened the published Local command surface to use a repo-scoped kubeconfig path so Local cluster validation no longer depended on ambient host kubeconfig state.
+- Hardened `bootstrap:kind:vault:sample-secret` so it can recover the active Local Vault dev root token from cluster logs when the stored token no longer matches the running Local Vault instance.
+- Declared stable `ExternalSecret` defaults explicitly in Git so the sample consumer application no longer remains `OutOfSync` purely because controller-defaulted fields were absent from the repo manifest.
+- Added a hard refresh to the tracked-remote Git reconciliation check so the Local proof path no longer depends on Argo CD poll timing alone.
+- Validated the tracked-remote Local GitOps path with:
+  - `pnpm check:py`
+  - `pnpm check:web`
+  - `pnpm check:infra`
+  - `pnpm check:control-plane`
+  - `pnpm apply:kind:argocd:gitops`
+  - `pnpm check:kind:argocd:remote-reconciliation`
+- Confirmed that the Local bootstrap application and the repo-managed child applications reached `Synced` and `Healthy`, the Local `ClusterSecretStore` validated successfully, the Local `ExternalSecret` and `Certificate` reached `Ready`, and the sample deployment reached `Available`.
+- Closed the remaining Local `P01-T03` boundary around tracked-remote Git reconciliation and set Local-only `P01-T04` preparation as the next critical-path lane while keeping higher-environment follow-on blocked.
+
+## P01-T04 Local State-Plane Kickoff
+
+- Created `pm/work-packages/P01-T04-local-storage-and-postgresql-baseline.md` as the first bounded Local `P01-T04` slice.
+- Set `P01-T04` active in the Phase 01 backlog and status dashboard.
+- Scoped the new lane to Local-only object storage plus lakeFS and PostgreSQL so the next execution slice stays aligned to the earliest Phase 02 prerequisites without making higher-environment or production-authoritative claims.

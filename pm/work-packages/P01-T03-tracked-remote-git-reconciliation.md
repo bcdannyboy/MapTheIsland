@@ -5,6 +5,7 @@
 - Work package ID: `WP-P01-T03-002`
 - Date: 2026-03-06
 - Related task ID: `P01-T03`
+- Status: completed
 - Owner: platform or infrastructure lead
 - Reviewer: architecture lead, policy and security lead
 
@@ -71,8 +72,8 @@
   - Local control-plane manifests exist
   - public Git remote and branch are fixed in the manifests
 - Blocking condition to resolve:
-  - the tracked remote must actually contain the repo state being validated, or
-    the task must be re-baselined explicitly
+  - resolved: the tracked remote now contains the validated repo state and the
+    Local reconciliation evidence is recorded below
 - Parallel workstreams to coordinate with:
   - local-only `P01-T04` preparation may begin only after this boundary is
     closed or formally re-baselined
@@ -117,6 +118,36 @@
     tracked-remote reconciliation.
 - Criterion 4:
   - PM, implementation docs, and tests all reflect the resolved boundary.
+
+## Outcome
+
+- Result:
+  - live tracked-remote Local Git reconciliation was validated for the current
+    repo state from the public `main` branch
+- Commands run:
+  - `pnpm check:py`
+  - `pnpm check:web`
+  - `pnpm check:infra`
+  - `pnpm check:control-plane`
+  - `pnpm apply:kind:argocd:gitops`
+  - `pnpm check:kind:argocd:remote-reconciliation`
+- Validation facts proved:
+  - the Local bootstrap `Application` reconciled from
+    `https://github.com/bcdannyboy/MapTheIsland.git` on `main`
+  - the repo-managed child `Application` objects reached `Synced` and
+    `Healthy`
+  - the Local `ClusterSecretStore` validated successfully against Vault after
+    the bootstrap token was recovered into the operator namespace
+  - the Local `ExternalSecret`, `Certificate`, and sample deployment reached
+    `Ready` or `Available`, and the sample consumer ended `Synced` and
+    `Healthy`
+- Operational notes:
+  - repo-scoped kubeconfig handling removed host-context ambiguity from the
+    Local command surface
+  - stable `ExternalSecret` defaults were declared in Git to eliminate false
+    `OutOfSync` drift in Argo CD
+  - the tracked-remote validation command now forces a hard refresh on the
+    root Local bootstrap application before waiting for the expected revision
 
 ## Handoff Requirements
 

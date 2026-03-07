@@ -193,6 +193,17 @@ Status values: `accepted`, `superseded`, `proposed`
   - sample workloads can validate namespace-local runtime secret delivery without cross-namespace secret sharing
   - higher-environment auth backend and tenancy details remain separately unresolved and may not silently inherit the Local bootstrap shortcut
 
+## D-019: Local Tracked-Remote GitOps Validation Declares Stable ExternalSecret Defaults And Forces A Root Refresh
+
+- Date: 2026-03-06
+- Status: accepted
+- Context: the remaining Local `P01-T03` closeout work surfaced two operational failure modes that were not architectural blockers but did make the tracked-remote GitOps gate noisy and brittle: External Secrets defaults caused false `OutOfSync` drift in Argo CD, and Argo CD could legitimately keep an older Git revision cached until the next poll even after the tracked remote had been updated.
+- Decision: the Local sample `ExternalSecret` manifest must declare the stable controller-defaulted fields that materially affect Argo CD sync, and the published tracked-remote validation command must hard-refresh the Local bootstrap `Application` before waiting for the target Git revision and child-application convergence.
+- Consequences:
+  - the Local tracked-remote validation command now measures real manifest drift instead of defaulted-spec churn
+  - the Local GitOps proof path is more deterministic and no longer depends on controller poll timing alone
+  - future Local control-plane manifests that show the same default-mutation pattern must either declare those defaults explicitly or justify a narrower ignore-differences rule
+
 ## Pending Decisions
 
 Use `proposed` entries here for future architectural or delivery changes. Do not edit accepted entries except to add a superseding record.

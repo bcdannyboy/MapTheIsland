@@ -102,7 +102,6 @@ values, while the `argocd` and `sample-secret-consumer` checks validate the
 local bootstrap-manifest path plus the namespace-local secret and certificate
 delivery path.
 
-Once the current repo state is aligned to the tracked public remote branch,
 Local tracked-remote Git reconciliation is validated with:
 
 ```bash
@@ -112,7 +111,9 @@ pnpm check:kind:argocd:remote-reconciliation
 
 Those commands validate the repo-managed `AppProject` and root `Application`
 objects plus the child `Application` reconciliation flow from the tracked
-remote branch. They are distinct from direct chart installation commands.
+public branch for the current repo state. They remain distinct from direct
+chart installation commands and are the authoritative Local proof of Git-driven
+reconciliation.
 
 ## Explicit Non-Goals
 

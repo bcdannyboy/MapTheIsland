@@ -73,6 +73,11 @@ def test_root_workspace_publishes_infra_and_local_dev_commands() -> None:
     assert "wait_app_healthy maptheisland-local-bootstrap" in scripts[
         "check:kind:argocd:remote-reconciliation"
     ]
+    refresh_command = (
+        "annotate application maptheisland-local-bootstrap "
+        "argocd.argoproj.io/refresh=hard --overwrite"
+    )
+    assert refresh_command in scripts["check:kind:argocd:remote-reconciliation"]
     assert "wait_revision maptheisland-local-sample-secret-consumer" in scripts[
         "check:kind:argocd:remote-reconciliation"
     ]

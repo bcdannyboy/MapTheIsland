@@ -4,13 +4,13 @@ Last updated: 2026-03-06
 
 ## Program Status
 
-- Overall status: Phase 00 complete, Phase 01 now has shared-library, CI, provider-neutral infrastructure, an internal-only local self-managed dev target, and an internal-only control-plane baseline, with higher-environment platform work still blocked on open decisions
+- Overall status: Phase 00 complete, Phase 01 now has shared-library, CI, provider-neutral infrastructure, an internal-only local self-managed dev target, an internal-only control-plane baseline, and validated tracked-remote Local Git reconciliation, with higher-environment platform work still blocked on open decisions
 - Current milestone: R0 Planning Baseline complete
 - Milestone confidence: high for the completed Phase 00 baseline, medium for `P01-T01`, unknown for infrastructure-heavy Phase 01 work until external decisions resolve
 - Current critical-path phase: Phase 01
 - Owner assignment status: owner archetypes defined, named assignees not yet recorded
 - WIP limit: one critical-path task plus one smaller parallel task per contributor or subagent
-- Current recommendation: treat the local `kind` target plus the internal-only control-plane baseline as the executable Local substrate, keep higher-environment `P01-T02` follow-on blocked, keep `P01-T03` active until live Git reconciliation from the tracked remote branch is explicitly validated or re-baselined, and keep `P01-T06-S03/S04` blocked behind `P01-T04-S04`
+- Current recommendation: treat the local `kind` target plus the internal-only control-plane baseline and tracked-remote Local Git reconciliation as the executable Local substrate, keep higher-environment `P01-T02` and `P01-T03` follow-on blocked, start local-only `P01-T04` preparatory work, and keep `P01-T06-S03/S04` blocked behind `P01-T04-S04`
 
 ## Phase Status
 
@@ -27,12 +27,12 @@ Last updated: 2026-03-06
 
 ## Active Queue
 
-- `P01-T03` is active in internal-only form, with the Local secret and certificate path validated and the remaining follow-on centered on live Git reconciliation from the tracked remote branch
-- higher-environment `P01-T02` follow-on remains blocked on `OQ-01` and `OQ-02`
+- `P01-T04` is now the active Local critical-path lane through `WP-P01-T04-001`, focused on the first Local state-plane slice for object storage, lakeFS, and PostgreSQL
+- higher-environment `P01-T02` and `P01-T03` follow-on remain blocked on `OQ-01` and `OQ-02`
 
 ## Next Ready Queue
 
-- local-only `P01-T04` preparatory work once the remaining `P01-T03` live-reconciliation follow-on is explicitly closed or re-baselined
+- remaining `P01-T04` follow-on after the first Local storage and PostgreSQL slice lands
 - remaining blocked `P01-T06-S03` observability work once `P01-T04-S04` lands
 
 ## Decision Watchlist
@@ -76,13 +76,13 @@ Last updated: 2026-03-06
 - completed the first provider-neutral `P01-T02` slice by adding Terraform module contracts, a `dev` environment blueprint, a Helm platform-foundation chart, infra-aware CI path coverage, and repository tests that lock the new declarative baseline
 - completed the internal-only local-dev `P01-T02` slice by adding a `kind` cluster target, local Helm values, local infra validation commands, and live cluster bootstrap plus server-side dry-run validation
 - completed the first internal-only `P01-T03` slice by adding repo-managed Argo CD manifests, Local-only Vault plus External Secrets and cert-manager baselines, sample secret-and-certificate consumer manifests, cluster-free control-plane validation commands, and live Local validation of the namespace-scoped secret and TLS delivery path
+- completed the remaining Local `P01-T03` follow-on by validating tracked-remote Git reconciliation from the public `main` branch, hardening repo-scoped kubeconfig handling and Local Vault token recovery, and eliminating false Argo drift through explicit `ExternalSecret` defaults
 
 ## Next Mandatory Updates
 
-- close or re-baseline the remaining internal-only `P01-T03` follow-on around live Git reconciliation from the tracked remote branch
-- keep provider-specific `P01-T02` follow-on explicitly blocked until higher-environment `OQ-01` and `OQ-02` decisions exist
+- execute `WP-P01-T04-001` and record the first Local storage plus PostgreSQL state-plane evidence
+- keep provider-specific `P01-T02` and higher-environment `P01-T03` follow-on explicitly blocked until higher-environment `OQ-01` and `OQ-02` decisions exist
 - carry the local-only scope boundary into every later Phase 01 validation summary until a higher-environment target is chosen
-- start local-only `P01-T04` preparatory work once the `P01-T03` follow-on boundary is recorded
 
 ## References
 

@@ -54,8 +54,8 @@ Build the reproducible platform substrate, delivery pipelines, and access-contro
 | --- | --- | --- |
 | P01-T01 | done | P00-T04, P00-T05 |
 | P01-T02 | active | P00-T04 |
-| P01-T03 | active | P01-T02 |
-| P01-T04 | planned | P01-T02, P01-T03, P00-T02 |
+| P01-T03 | done | P01-T02 |
+| P01-T04 | active | P01-T02, P01-T03, P00-T02 |
 | P01-T05 | planned | P01-T04 |
 | P01-T06 | blocked | P01-T01 |
 | P01-T07 | planned | P01-T02, P00-T03 |
@@ -155,7 +155,7 @@ Build the reproducible platform substrate, delivery pipelines, and access-contro
 
 ## P01-T03 Configure GitOps, Secrets, And Certificate Management
 
-- Status: active
+- Status: done
 - Relevant constraints: AC-15, AC-17
 - Objective: ensure deployment, secrets, and certificates are managed declaratively and securely.
 - Dependencies: blocking on P01-T02
@@ -169,28 +169,30 @@ Build the reproducible platform substrate, delivery pipelines, and access-contro
   - cluster reconciliation is Git-driven
   - secrets are not committed to the repo
   - certificate lifecycle is automated
-- Current execution note:
+- Completion note:
   - the first internal-only slice now exists under `infra/gitops/`,
     `infra/helm/values/control-plane/`, and
     `docs/implementation/control-plane-gitops-secrets-and-certs-baseline.md`
   - Local validation now proves Argo CD installation plus server-side bootstrap
     acceptance, Local-only Vault and External Secrets secret delivery, and
     Local-only cert-manager certificate issuance through a sample workload path
-  - live Git reconciliation from the tracked remote branch remains the
-    remaining Local follow-on before this task can be treated as fully closed
+  - tracked-remote Local Git reconciliation is now validated from the public
+    `main` branch through the published `pnpm apply:kind:argocd:gitops` and
+    `pnpm check:kind:argocd:remote-reconciliation` commands
+  - higher-environment GitOps, secret, and certificate rollout remains blocked
+    on `OQ-01` and `OQ-02`
 - Current subtask state:
   - `P01-T03-S01` is complete for Local Argo CD installation, `AppProject`
-    publication, root-bootstrap manifest publication, and server-side
-    validation; live Git reconciliation from the tracked remote branch remains
-    an explicit follow-on
+    publication, root-bootstrap manifest publication, server-side validation,
+    and tracked-remote Git reconciliation from the public `main` branch
   - `P01-T03-S02` is complete for the Local Vault plus External Secrets path,
     including gitignored bootstrap-token generation and namespace-local secret
     materialization
   - `P01-T03-S03` is complete for the Local cert-manager self-signed baseline
     and namespace-local certificate ownership model
   - `P01-T03-S04` is complete for the Local sample secret and certificate
-    consumer through the direct Local validation path; Git-driven sample
-    reconciliation remains tied to the same tracked-remote follow-on boundary
+    consumer through both the direct Local validation path and the tracked-remote
+    Git reconciliation path
 - Subtasks:
   1. `P01-T03-S01` Install and configure Argo CD for environment reconciliation.
      Depends on: P01-T02-S02
@@ -215,12 +217,12 @@ Build the reproducible platform substrate, delivery pipelines, and access-contro
 
 ## P01-T04 Stand Up Core Stateful Services And Catalogs
 
-- Status: planned
+- Status: active
 - Relevant constraints: AC-04, AC-13, AC-15, AC-16
 - Objective: stand up the platform’s persistent state plane and catalog surfaces.
 - Dependencies: blocking on P01-T02, P01-T03, and P00-T02
 - Parallelization: parallelizable with P01-T05
-- Required external decisions: OQ-01 and OQ-02 for higher-environment rollout; internal-only local-dev scaffolding may proceed once `P01-T03` establishes the required control-plane path
+- Required external decisions: OQ-01 and OQ-02 for higher-environment rollout; internal-only local-dev scaffolding may proceed now that `P01-T03` has established the required direct and tracked-remote control-plane path
 - Deliverables:
   - object storage and lakeFS
   - PostgreSQL
@@ -232,6 +234,13 @@ Build the reproducible platform substrate, delivery pipelines, and access-contro
   - each stateful service is deployable and health-checkable
   - Iceberg catalog can be reached
   - service credentials are delivered securely
+- Current execution note:
+  - the first bounded Local slice is now opened through
+    `pm/work-packages/P01-T04-local-storage-and-postgresql-baseline.md`
+  - that slice is intentionally limited to the earliest `P01-T04-S01` and
+    `P01-T04-S02` surfaces needed for Local ingest replay and operational
+    metadata, while higher-environment rollout remains blocked on `OQ-01` and
+    `OQ-02`
 - Subtasks:
   1. `P01-T04-S01` Stand up object storage and lakeFS with branchable data access.
      Depends on: P01-T02-S03, P01-T03-S02

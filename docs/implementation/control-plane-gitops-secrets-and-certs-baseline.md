@@ -86,7 +86,10 @@ This means:
 - Live Git reconciliation from Argo CD is authoritative only after the same
   manifests exist on the tracked remote branch.
 - Direct local installation success may not be cited as evidence that full
-  end-to-end Git reconciliation has already been proven.
+  end-to-end Git reconciliation has already been proven by itself.
+- The current Local baseline now includes that stronger tracked-remote proof
+  through the published `pnpm apply:kind:argocd:gitops` and
+  `pnpm check:kind:argocd:remote-reconciliation` commands.
 
 ## Namespace And Tenancy Rules
 
@@ -208,15 +211,15 @@ This validates:
 
 ### Tracked-Remote Git Reconciliation Validation
 
-After the same repo state exists on the tracked public branch, validate the
-live Local GitOps path with:
+Validate the live Local GitOps path with:
 
 ```bash
 pnpm apply:kind:argocd:gitops
 pnpm check:kind:argocd:remote-reconciliation
 ```
 
-This validation is stronger than direct Local bootstrap because it proves:
+This validation is now part of the authoritative Local evidence for the current
+repo state. It is stronger than direct Local bootstrap because it proves:
 
 - the Local `AppProject` and root `Application` are accepted as live objects
 - Argo CD can fetch the tracked public repository state on `main`
@@ -224,6 +227,9 @@ This validation is stronger than direct Local bootstrap because it proves:
   remote state
 - the sample secret and certificate consumer can become healthy after the
   Local-only Vault bootstrap material is seeded outside Git
+- the sample consumer ends `Synced` and `Healthy` after stable
+  `ExternalSecret` defaults are declared in Git and the root Local bootstrap
+  application is refreshed against the tracked revision
 
 The tracked-remote validation does not change the Local-only boundary. It still
 does not claim shared-environment, pilot, or production GitOps readiness.

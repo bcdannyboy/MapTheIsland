@@ -36,6 +36,7 @@ Until named owners are assigned, use the owner archetypes from [`21_roles_and_re
 | R-15 | architecture lead | additional Python packages appear without `uv.lock` updates or the planned package-boundary transition | weekly through early Phase 01 | a second Python package lands without the deliberate manifest split and lock refresh | low | 2026-03-06 |
 | R-16 | platform or infrastructure lead | provider-neutral blueprints treated as deploy-ready infra in planning or implementation discussions | weekly through Phase 01 | one attempt to land provider-specific follow-on work without narrowing `OQ-01` or `OQ-02` | medium | 2026-03-06 |
 | R-17 | platform or infrastructure lead | local `kind` success cited as proof of higher-environment readiness | weekly through Phase 01 | one higher-environment claim or follow-on decision based only on local `kind` validation | medium | 2026-03-06 |
+| R-18 | platform or infrastructure lead | Local validation summaries or GitOps checks blur the distinction between direct bootstrap and tracked-remote reconciliation | weekly through early `P01-T04` | one claim that stale manifests or direct bootstrap prove tracked-remote reconciliation | low after validation and command hardening | 2026-03-06 |
 
 ## R-01: Policy Leakage Through Derived Artifacts
 
@@ -367,19 +368,19 @@ Until named owners are assigned, use the owner archetypes from [`21_roles_and_re
 
 ## R-18: Direct Local Control-Plane Bootstrap Is Mistaken For Live Git Reconciliation
 
-- Status: active
-- Source: the internal-only `P01-T03` slice now validates Argo CD manifests and the Local secret or certificate path, but part of the live Local validation still installs charts directly before the exact repo state is necessarily present on the tracked remote branch.
+- Status: retired
+- Source: the internal-only `P01-T03` slice initially validated Argo CD manifests and the Local secret or certificate path before the tracked-remote Local reconciliation step had been proven for the same repo state.
 - Trigger: contributors cite successful direct Helm or `kubectl` bootstrap as evidence that Argo CD has already reconciled the same repo state from Git.
 - Impact: false confidence in GitOps readiness, incomplete `P01-T03` closeout evidence, and later confusion about what was actually exercised.
-- Likelihood: medium
+- Likelihood: low
 - Mitigation:
   - keep the Git remote and tracked-branch boundary explicit in the implementation docs
   - distinguish direct Local bootstrap commands from tracked-remote reconciliation evidence in validation summaries
   - require an explicit follow-on validation or re-baseline before declaring `P01-T03` fully closed
+  - publish a repo-scoped kubeconfig path, recover the active Local Vault token when the dev root token rotates, and declare stable `ExternalSecret` defaults in Git so the tracked-remote check reflects real drift only
 - Contingency:
-  - stop any closeout claim that depends on unverified live reconciliation
-  - re-baseline the task around the remaining Local follow-on
-  - remove or correct any PM text that implies Git reconciliation was already proven when it was not
+  - if future Local GitOps changes reintroduce drift or stale-remote confusion, rerun the tracked-remote validation gate before claiming Local closeout
+  - re-open the risk and correct PM or implementation text immediately if direct bootstrap is again cited as sufficient proof of Git reconciliation
 - Related tasks:
   - P01-T03
   - P01-T04
