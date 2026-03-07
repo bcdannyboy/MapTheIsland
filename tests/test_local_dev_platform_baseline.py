@@ -66,12 +66,15 @@ def test_root_workspace_exposes_infra_and_local_dev_commands() -> None:
     assert scripts["check:infra"] == (
         "pnpm lint:tf && pnpm validate:tf:dev && pnpm lint:helm && pnpm template:helm:kind-dev"
     )
-    assert scripts["create:kind:dev"] == (
-        "kind create cluster --name maptheisland-dev --config infra/kind/dev-cluster.yaml"
-    )
-    assert scripts["delete:kind:dev"] == "kind delete cluster --name maptheisland-dev"
+    assert "kind create cluster --name maptheisland-dev" in scripts["create:kind:dev"]
+    assert "--config infra/kind/dev-cluster.yaml" in scripts["create:kind:dev"]
+    assert "--kubeconfig .state/kind/kubeconfig" in scripts["create:kind:dev"]
+    assert "kind delete cluster --name maptheisland-dev" in scripts["delete:kind:dev"]
+    assert "rm -f .state/kind/kubeconfig" in scripts["delete:kind:dev"]
     assert "helm upgrade --install maptheisland-platform" in scripts["apply:kind:foundation"]
     assert "values.kind-dev.yaml" in scripts["check:kind:foundation"]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["apply:kind:foundation"]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["check:kind:foundation"]
 
 
 def test_gitignore_covers_phase_01_generated_validation_artifacts() -> None:

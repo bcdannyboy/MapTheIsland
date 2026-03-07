@@ -110,6 +110,12 @@ def test_sample_secret_consumer_path_preserves_namespace_scoping() -> None:
     assert "namespace: maptheisland-dev-application" in external_secret
     assert "maptheisland-local-sample-runtime" in external_secret
     assert "ClusterSecretStore" in external_secret
+    assert "deletionPolicy: Retain" in external_secret
+    assert "engineVersion: v2" in external_secret
+    assert "mergePolicy: Replace" in external_secret
+    assert "conversionStrategy: Default" in external_secret
+    assert "decodingStrategy: None" in external_secret
+    assert "metadataPolicy: None" in external_secret
     assert "maptheisland-local-selfsigned" in certificate
     assert "secretName: maptheisland-local-sample-tls" in certificate
     assert "secretKeyRef" in deployment

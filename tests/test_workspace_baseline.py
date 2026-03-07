@@ -42,31 +42,49 @@ def test_root_workspace_publishes_infra_and_local_dev_commands() -> None:
     assert "pnpm template:external-secrets:local" in scripts["check:control-plane"]
     assert "pnpm template:vault:local" in scripts["check:control-plane"]
     assert "pnpm template:cert-manager:local" in scripts["check:control-plane"]
-    assert scripts["create:kind:dev"].endswith("infra/kind/dev-cluster.yaml")
-    assert scripts["delete:kind:dev"] == "kind delete cluster --name maptheisland-dev"
+    assert "kind create cluster --name maptheisland-dev" in scripts["create:kind:dev"]
+    assert "--kubeconfig .state/kind/kubeconfig" in scripts["create:kind:dev"]
+    assert "kind delete cluster --name maptheisland-dev" in scripts["delete:kind:dev"]
+    assert "rm -f .state/kind/kubeconfig" in scripts["delete:kind:dev"]
     assert "helm upgrade --install maptheisland-platform" in scripts["apply:kind:foundation"]
     assert "kubectl wait --for=condition=Ready nodes --all --timeout=120s" in scripts[
         "check:kind:nodes"
     ]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["check:kind:nodes"]
     assert "kubectl get nodes -L maptheisland.io/nodepool" in scripts["check:kind:nodes"]
     assert "kubectl apply --dry-run=server" in scripts["check:kind:foundation"]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["check:kind:foundation"]
     assert "helm upgrade --install maptheisland-argocd" in scripts["apply:kind:argocd"]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["apply:kind:argocd"]
     assert "kubectl apply --dry-run=server -f infra/gitops/bootstrap/local" in scripts[
         "check:kind:argocd:bootstrap"
     ]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["check:kind:argocd:bootstrap"]
     assert "kubectl apply -f infra/gitops/bootstrap/local" in scripts["apply:kind:argocd:gitops"]
+    assert "rollout status statefulset/maptheisland-argocd-application-controller" in scripts[
+        "apply:kind:argocd:gitops"
+    ]
     assert "Expected revision $EXPECTED_REVISION not reported for $APP" in scripts[
         "check:kind:argocd:remote-reconciliation"
     ]
-    assert "wait_app maptheisland-local-bootstrap" in scripts[
+    assert "wait_app_synced maptheisland-local-bootstrap" in scripts[
+        "check:kind:argocd:remote-reconciliation"
+    ]
+    assert "wait_app_healthy maptheisland-local-bootstrap" in scripts[
         "check:kind:argocd:remote-reconciliation"
     ]
     assert "wait_revision maptheisland-local-sample-secret-consumer" in scripts[
         "check:kind:argocd:remote-reconciliation"
     ]
+    assert "rollout status statefulset/maptheisland-argocd-application-controller" in scripts[
+        "check:kind:argocd:remote-reconciliation"
+    ]
+    assert "KC=$PWD/.state/kind/kubeconfig" in scripts["check:kind:argocd:remote-reconciliation"]
     assert ".state/kind/vault-root-token" in scripts["bootstrap:kind:vault:token"]
     assert "helm upgrade --install maptheisland-vault" in scripts["apply:kind:vault"]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["apply:kind:vault"]
     assert "exec $POD -- sh -c" in scripts["bootstrap:kind:vault:sample-secret"]
+    assert "KC=$PWD/.state/kind/kubeconfig" in scripts["bootstrap:kind:vault:sample-secret"]
     assert "deployment/maptheisland-cert-manager-webhook" in scripts[
         "apply:kind:sample-secret-consumer"
     ]
@@ -76,9 +94,11 @@ def test_root_workspace_publishes_infra_and_local_dev_commands() -> None:
     assert "kubectl apply -f infra/gitops/apps/local/sample-secret-consumer" in scripts[
         "apply:kind:sample-secret-consumer"
     ]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["apply:kind:sample-secret-consumer"]
     assert "certificate/maptheisland-local-sample-certificate" in scripts[
         "check:kind:sample-secret-consumer"
     ]
+    assert "KUBECONFIG=$PWD/.state/kind/kubeconfig" in scripts["check:kind:sample-secret-consumer"]
 
 
 def test_gitignore_covers_current_generated_artifact_classes() -> None:
